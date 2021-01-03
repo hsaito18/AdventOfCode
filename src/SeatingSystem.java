@@ -98,3 +98,4 @@ public class SeatingSystem {
         return counter;
     }
 }
+// test comment
