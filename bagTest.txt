@@ -1,0 +1,4 @@
+big red bags contain 2 lame orange bags, 1 spicy yellow bag.
+lame orange bags contain 1 frilly pink bag.
+frilly pink bags contain 3 spicy yellow bags.
+spicy yellow bags contain no other bags.
