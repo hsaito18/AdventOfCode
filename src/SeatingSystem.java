@@ -4,7 +4,9 @@ import java.util.Scanner;
 
 public class SeatingSystem {
 
-    private static final String FILE_PATH = "C:\\Users\\hsait\\IdeaProjects\\aoc\\seating.txt";
+    private static final String FILE_PATH = "C:\\Users\\hsait\\IdeaProjects\\AdventOfCode\\seating.txt";
+    private boolean hasChanged;
+
     public static void main(String[] args) throws FileNotFoundException {
         Scanner s = new Scanner(new File(FILE_PATH));
         ArrayList<String> list = new ArrayList<String>();
@@ -12,11 +14,11 @@ public class SeatingSystem {
             list.add(s.next());
         }
         s.close();
-
-        System.out.println("ANSWER: " + solve(list));
+        SeatingSystem ss = new SeatingSystem();
+        System.out.println("ANSWER: " + ss.solve(list));
     }
 
-    private static int solve (ArrayList<String> in){
+    private int solve(ArrayList<String> in){
         int length = in.get(0).length();
         int height = in.size();
         char[][] graph = new char[height][length];
@@ -25,16 +27,15 @@ public class SeatingSystem {
             char[] row = in.get(i).toCharArray();
             graph[i] = row;
         }
-
-        boolean hasChanged = true;
-        while (hasChanged) {
-            hasChanged = runRound(graph);
+        this.hasChanged = true;
+        while (this.hasChanged) {
+            graph = runRound(graph);
         }
         return countOccupied(graph);
     }
 
-    private static boolean runRound(char[][] graph){
-        boolean check = false;
+    private char[][] runRound(char[][] graph){
+        this.hasChanged = false;
         char[][] endGraph = makeCopy(graph);
         for (int i = 0; i < graph.length; i++){
             for (int j = 0; j < graph[i].length; j++){
@@ -42,29 +43,27 @@ public class SeatingSystem {
                 if (graph[i][j] == 'L'){
                     if (nearOccupied(graph, i,j) == 0){
                         endGraph[i][j] = '#';
-                        check = true;
+                        hasChanged = true;
                     }
                 }
                 else if (graph[i][j] == '#'){
                     if (nearOccupied(graph,i,j) >= 4){
                         endGraph[i][j] = 'L';
-                        check = true;
+                        hasChanged = true;
                     }
                 }
-
             }
         }
-        System.out.println("RAN A ROUND");
-        return check;
+        //printGraph(endGraph);
+        //System.out.println("RAN A ROUND");
+        return endGraph;
     }
 
 
     private static char[][] makeCopy(char[][] in){
         char[][] output = new char[in.length][in[0].length];
         for (int i = 0; i < in.length; i++){
-            for (int ii = 0; ii < in[i].length; ii++){
-                output[i][ii] = in[i][ii];
-            }
+            System.arraycopy(in[i], 0, output[i], 0, in[i].length);
         }
         return output;
     }
@@ -77,7 +76,9 @@ public class SeatingSystem {
                 for (int j = col - 1; j <= col + 1; j++){
                     if (j >= 0 && j < graph[i].length){
                         if (graph[i][j] == '#'){
-                            counter++;
+                            if (j != col || i != row) {
+                                counter++;
+                            }
                         }
                     }
                 }
@@ -88,14 +89,24 @@ public class SeatingSystem {
 
     private static int countOccupied(char[][] graph){
         int counter = 0;
-        for (int i = 0; i < graph.length; i++){
-            for (int j = 0; j < graph[i].length; j++) {
-             if (graph[i][j] == '#'){
-                 counter++;
-             }
+        for (char[] chars : graph) {
+            for (char aChar : chars) {
+                if (aChar == '#') {
+                    counter++;
+                }
             }
         }
         return counter;
+    }
+
+    private void printGraph(char[][] graph){
+        for (int i = 0; i < graph.length; i++){
+            for (int j = 0; j < graph[i].length; j++){
+                System.out.print(graph[i][j]);
+            }
+            System.out.println("");
+        }
+        System.out.println("");
     }
 }
 // test comment
