@@ -41,20 +41,20 @@ public class SeatingSystem {
             for (int j = 0; j < graph[i].length; j++){
                 //i = row j = col
                 if (graph[i][j] == 'L'){
-                    if (nearOccupied(graph, i,j) == 0){
+                    if (seeOccupied(graph, i,j) == 0){
                         endGraph[i][j] = '#';
                         hasChanged = true;
                     }
                 }
                 else if (graph[i][j] == '#'){
-                    if (nearOccupied(graph,i,j) >= 4){
+                    if (seeOccupied(graph,i,j) >= 5){
                         endGraph[i][j] = 'L';
                         hasChanged = true;
                     }
                 }
             }
         }
-        //printGraph(endGraph);
+        printGraph(endGraph);
         //System.out.println("RAN A ROUND");
         return endGraph;
     }
@@ -66,6 +66,133 @@ public class SeatingSystem {
             System.arraycopy(in[i], 0, output[i], 0, in[i].length);
         }
         return output;
+    }
+
+    private static int seeOccupied(char[][] graph, int row, int col){
+        int counter = 0;
+        //up
+        for (int i = row - 1; i >= 0; i--){
+            switch (graph[i][col]){
+                case '#':
+                    counter++;
+                    i = -1;
+                    break;
+                case 'L':
+                    i = -1;
+                    break;
+                case '.':
+                    break;
+            }
+        }
+        //down
+        for (int i = row + 1; i < graph.length; i++){
+            switch (graph[i][col]){
+                case '#':
+                    counter++;
+                    i = graph.length;
+                    break;
+                case 'L':
+                    i = graph.length;
+                    break;
+                case '.':
+                    break;
+            }
+        }
+        //left
+        for (int i = col - 1; i >= 0; i--){
+            switch (graph[row][i]){
+                case '#':
+                    counter++;
+                    i = -1;
+                    break;
+                case 'L':
+                    i = -1;
+                    break;
+                case '.':
+                    break;
+            }
+        }
+        //right
+        for (int i = col + 1; i < graph[row].length; i++){
+            switch (graph[row][i]){
+                case '#':
+                    counter++;
+                    i = graph[row].length;
+                    break;
+                case 'L':
+                    i = graph[row].length;
+                    break;
+                case '.':
+                    break;
+            }
+        }
+        int i = 1;
+        //upright
+        while (row - i >= 0 && col + i < graph[0].length){
+            switch (graph[row-i][col+i]) {
+                case '#':
+                    counter++;
+                    i = graph.length+1;
+                    break;
+                case 'L':
+                    i = graph.length+1;
+                    break;
+                case '.':
+                    break;
+            }
+            i++;
+        }
+        //upleft
+        i = 1;
+        while (row - i >= 0 && col - i >= 0){
+            switch (graph[row-i][col-i]) {
+                case '#':
+                    counter++;
+                    i = graph.length + 1;
+                    break;
+                case 'L':
+                    i = graph.length + 1;
+                    break;
+                case '.':
+                    break;
+            }
+            i++;
+        }
+
+        //downleft
+        i = 1;
+        while (row + i < graph.length && col - i >= 0){
+            switch (graph[row+i][col-i]) {
+                case '#':
+                    counter++;
+                    i = graph.length;
+                    break;
+                case 'L':
+                    i = graph.length;
+                    break;
+                case '.':
+                    break;
+            }
+            i++;
+        }
+
+        //downright
+        i = 1;
+        while (row + i < graph.length && col + i < graph[0].length){
+            switch (graph[row+i][col+i]) {
+                case '#':
+                    counter++;
+                    i = graph.length+1;
+                    break;
+                case 'L':
+                    i = graph.length+1;
+                    break;
+                case '.':
+                    break;
+            }
+            i++;
+        }
+        return counter;
     }
 
 
